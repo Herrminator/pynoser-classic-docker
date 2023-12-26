@@ -8,8 +8,10 @@ true '
   -e PYTHONPATH=/opt/pynoser\
 '
 
+# run 'pynoser-unittest-run reader' to only run pynoser tests (no django)
+
 docker run -i -t\
   --rm ${PYNOSER_IMAGE}\
-  /opt/pynoser/pynoser/manage.py test reader
+  /opt/pynoser/pynoser/manage.py test "$@"
 
 echo $?
