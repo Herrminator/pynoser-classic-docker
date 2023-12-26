@@ -1,0 +1,14 @@
+#!/bin/bash
+. /etc/profile
+
+self=$(dirname $(readlink -f $0))
+
+docker exec -t\
+  -w /data/logs\
+  -e PYNOSER_DATABASE_NAME=/data/pynoser.db3\
+  pynoser-cron\
+  /bin/bash -c "sudo -E -u uwsgi -g uwsgi /opt/pynoser/pynoser/tmp/dead $*"
+
+docker exec -t\
+  pynoser-cron\
+  /bin/bash -c 'sudo -E -u uwsgi -g uwsgi mv /opt/pynoser/pynoser/tmp/dead*.log /data/logs'

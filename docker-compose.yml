@@ -1,0 +1,76 @@
+version: "3.7"
+
+services:
+  pynoser-base:
+    image: ${PYNOSER_IMAGE}
+    container_name: "pynoser-none"
+    build:
+      context: .
+      cache_from:
+        - ${PYNOSER_IMAGE}
+    restart: unless-stopped
+    environment:
+      - UID=${UID}
+      - GID=${GID}
+      - PYNOSER_DATABASE_NAME=/data/pynoser.db3
+      - PYNOSER_COOKIE_JAR=/data/pynoser.cookies
+    # - PYNOSER_APACHE_DEBUG=true
+    networks:
+      - default
+    volumes:
+      - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data:/data
+      - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/logs/nginx:/var/log/nginx
+      - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/logs/uwsgi.log:/var/log/uwsgi.log
+      - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+    profiles:
+      - do_not_start
+
+  pynoser:
+    extends:
+      service: pynoser-base
+    container_name: "pynoser"
+    hostname:       "pynoser"
+    ports:
+      - target:      80
+        published: ${PYNOSER_HTTP_PORT}
+      - target:     443
+        published: ${PYNOSER_HTTPS_PORT}
+    environment:
+      # For jwilder/nginx-proxy
+      - VIRTUAL_HOST=${PYNOSER_SERVER}
+    profiles:
+      - default
+
+  pynoser-cron:
+    extends:
+      service: pynoser-base
+    container_name: "pynoser-cron"
+    hostname:       "pynoser-cron"
+    command:
+      "/var/run/start-cron.sh"
+    # volumes:
+    #  - /something/as:/etc/crontab
+    profiles:
+      - default
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=libreelec
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      - default
+    ports:
+      - 5432:5432
+    volumes:
+      - ${CONTAINER_HOME}/postgres/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    profiles:
+      - with_postgres
+
+networks:
+  default:
+    name: ${CONTAINER_NET}
+    external: true

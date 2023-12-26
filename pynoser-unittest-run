@@ -1,0 +1,15 @@
+#!/bin/bash
+self="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. .env
+
+true '
+  -w /data/debug\
+  -e DJANGO_SETTINGS_MODULE=pynoser.settings \
+  -e PYTHONPATH=/opt/pynoser\
+'
+
+docker run -i -t\
+  --rm ${PYNOSER_IMAGE}\
+  /opt/pynoser/pynoser/manage.py test reader
+
+echo $?

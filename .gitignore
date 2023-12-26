@@ -1,0 +1,11 @@
+.env
+tmp/*
+
+# from init.sh
+pynoser-admin
+pynoser-sh
+pynoser-cron-sh
+pynoser-errreset
+pynoser-randupd
+docker.compose.up
+docker.compose.down

@@ -1,0 +1,12 @@
+#!/bin/bash
+. /etc/profile
+
+self=$(dirname $(readlink -f $0))
+
+docker exec -ti\
+  -w /opt/pynoser\
+  -e PYNOSER_DATABASE_NAME=/data/pynoser.db3\
+  -e PYNOSER_MEDIA_ROOT=/data\
+  pynoser-cron\
+  /bin/bash -c "sudo -E -u uwsgi -g uwsgi /opt/pynoser/pynoser/tmp/clean_orphaned_files.sh $*"
+  

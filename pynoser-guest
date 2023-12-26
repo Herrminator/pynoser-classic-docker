@@ -1,0 +1,29 @@
+#!/bin/bash
+user=${1-guest}
+
+./pynoser-admin shell --traceback <<EOF
+from django.contrib.auth.models import User
+from pynoser.reader.models import UserPref
+
+if not User.objects.filter(username='${user}').exists():
+    # user=User.objects.create_user('${user}', password='bar')
+    user=User.objects.create(username='${user}')
+    user.is_superuser=False
+    user.is_staff=False
+    user.save()
+else:
+  print("'${user}' exists")
+  user = User.objects.get(username='${user}')
+
+print(User.objects.get(username='${user}'))
+
+if not UserPref.objects.filter(user=user).exists():
+    pref = UserPref.objects.create(user=user)
+    pref.expiry = 168
+    pref.maxAge = 5760
+    pref.save()
+else:
+  print("Preferences for '${user}' exist")
+  print(UserPref.objects.get(user=user))
+
+EOF

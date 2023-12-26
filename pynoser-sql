@@ -1,0 +1,4 @@
+#!/bin/bash
+self=$(dirname $(readlink -f $0))
+
+$self/pynoser-admin dbshell "$@"

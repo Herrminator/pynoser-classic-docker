@@ -1,0 +1,10 @@
+#!/bin/bash
+. /etc/profile
+
+self=$(dirname $(readlink -f $0))
+
+docker exec -t\
+  -w /opt/pynoser\
+  -e PYNOSER_DATABASE_NAME=/data/pynoser.db3\
+  pynoser-cron\
+  /bin/bash -c "(cd /; sudo -E -u uwsgi -g uwsgi /opt/pynoser/pynoser/batchupd.sh --cron) >> /data/logs/batchupd.out 2>&1"

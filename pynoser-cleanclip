@@ -1,0 +1,11 @@
+#!/bin/bash
+. /etc/profile
+
+self=$(dirname $(readlink -f $0))
+
+docker exec -ti\
+  -w /opt/pynoser\
+  -e PYNOSER_DATABASE_NAME=/data/pynoser.db3\
+  pynoser-cron\
+  /bin/bash -c "sudo -E -u uwsgi -g uwsgi /opt/pynoser/pynoser/tmp/cleanclip $*"
+  

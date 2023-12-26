@@ -1,0 +1,5 @@
+#!/bin/bash
+export PYTHONPATH=/opt/pynoser/pynoser:/opt/pynoser:$PYTHONPATH
+
+# pushd $selfd > /dev/null
+python -u -W ignore::DeprecationWarning:django.db -OO "$@"
