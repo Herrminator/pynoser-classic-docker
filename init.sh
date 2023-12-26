@@ -1,7 +1,10 @@
 #!/bin/bash
 . .env
 
+
 pynoser_repo="git@github.com:Herrminator/pynoser-proto.git"
+ssh git@github.com 2>&1 | grep success > /dev/null ||\
+  pynoser_repo="https://github.com/Herrminator/pynoser-proto.git"
 
 # create empty files if necessary to make docker file volumes work
 touch ./data/logs/uwsgi.log
@@ -26,7 +29,7 @@ pushd pynoser-scripts
 # git archive --remote="$pynoser_repo" HEAD $scripts | tar x0
 
 git clone $pynoser_repo pynoser.tmp
-pushd pynoser.tmp
+pushd pynoser.tmp || exit
 cp -p $scripts ..
 cp -p doc/restore ../../tmp
 popd
