@@ -28,18 +28,20 @@ if [ "$1" == "-r" ]; then
 fi
 
 if [[ ! -L "pynoser-admin" || "$1" == "-f" ]]; then
-    pushd pynoser-scripts
+    cd pynoser-scripts
     # not supported by github :(
     # git archive --remote="$pynoser_repo" HEAD $scripts | tar x0
 
-    git clone $pynoser_repo pynoser.tmp
-    pushd pynoser.tmp || exit
+    git clone $pynoser_repo pynoser.tmp || exit
+    cd pynoser.tmp || exit
     cp -p $scripts ..
     cp -p doc/restore ../../tmp
-    popd
+    cd ..
     rm -rf pynoser.tmp
-    ln -srf $scripts ..
-    popd
+    cd ..
+    for s in $scripts; do
+      ln -sf "pynoser-scripts/$s" .
+    done
 else
     echo "Script links seem to exist. Use '-f' to overwrite"
 fi
