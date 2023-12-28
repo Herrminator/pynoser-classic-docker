@@ -3,11 +3,14 @@
 
 . .env
 
-
-pynoser_repo="git@github.com:Herrminator/pynoser-proto.git"
-ssh git@github.com 2>&1 | grep success > /dev/null ||\
-  pynoser_repo="https://github.com/Herrminator/pynoser-proto.git"
-
+if [ -z "$GITHUB_USER" ]; then
+    pynoser_repo="git@github.com:Herrminator/pynoser-proto.git"
+    ssh git@github.com 2>&1 | grep success > /dev/null ||\
+      pynoser_repo="https://github.com/Herrminator/pynoser-proto.git"
+else
+    pynoser_repo="https://$GITHUB_USER@github.com/Herrminator/pynoser-proto.git"
+fi
+  
 # create empty files if necessary to make docker file volumes work
 touch ./data/logs/uwsgi.log
 touch ./data/logs/cron.log
