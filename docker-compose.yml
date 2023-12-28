@@ -49,8 +49,8 @@ services:
     hostname:       "pynoser-cron"
     command:
       "/var/run/start-cron.sh"
-    # volumes:
-    #  - /something/as:/etc/crontab
+    volumes:
+      - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/logs/cron.log:/var/log/cron.log
     profiles:
       - default
 

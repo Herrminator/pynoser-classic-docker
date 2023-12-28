@@ -1,13 +1,15 @@
 # pynoser-classic-docker
 Sample docker runtime-configuration for PyNoser classic (pynoser-proto)
 
+Last tested with real-life data on Dec. 28, 2023.
+
 # TL;DR
-First run init.sh! This will create some required symlinks.
+First run `init.sh`! This will create some required symlinks.
 Then either restore existing data (see `tmp/restore`) or run `pynoser-new`
 after starting the containers.
 
 # Motivation
-PyNoser was *not* written with docker in mind. In fact, it was written more than
+PyNoser was **not** written with docker in mind. In fact, it was written more than
 17 years ago, when docker wasn't even on the horizon.
 
 So, PyNoser is a kind of complex arrangement of Django apps and scripts, combined

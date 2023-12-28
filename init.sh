@@ -8,6 +8,7 @@ ssh git@github.com 2>&1 | grep success > /dev/null ||\
 
 # create empty files if necessary to make docker file volumes work
 touch ./data/logs/uwsgi.log
+touch ./data/logs/cron.log
 
 # the weirdest symlink of all (creates /home/johler/develop/python/django/pynoser/data in container)
 ln -sf /data ./data
