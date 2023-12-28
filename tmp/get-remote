@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# match with .env / docker-compose.yml
+
+DBNAME=pynoser.db3
+WEBFEEDS=webfeeds
+
+DBHOST=${DBHOST-tjpi08}
+DBSRC=${DBSRC-${DBHOST}:/home/johler/develop/python/django/pynoser/pynoser.db3}
+
+# copy here - use restore to restore to container data
+DBDST=.
+WFSRC=${WFSRC-${DBHOST}:/home/johler/develop/python/django/pynoser/data/${WEBFEEDS}}
+WFDST=${DBDST}/data
+
+if [ "$1" == "--clear" ]; then
+  rm    ${DBDST}/${DBNAME}
+  rm -r ${WFDST}
+  exit
+fi
+
+rsync -vtz  ${DBSRC} ${DBDST} || exit
+rsync -vrtz ${WFSRC} ${WFDST} || exit

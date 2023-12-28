@@ -5,9 +5,10 @@ Last tested with real-life data on Dec. 28, 2023.
 
 # TL;DR
 First run `init.sh`! This will create some required symlinks.
-Then either restore existing data (see `tmp/restore`) or run `pynoser-new`
-after starting the containers.
+Then either restore existing data (see `tmp/get-remote` and `tmp/restore`)
+or run `pynoser-new` after starting the containers.
 If you get an error about a readonly database, run data/chmod.sh (maybe with sudo).
+
 
 # Motivation
 PyNoser was **not** written with docker in mind. In fact, it was written more than
