@@ -1,4 +1,6 @@
 #!/bin/bash
+[ ! -e ./.env ] && cp -p env.sample .env && echo "Created .env from env.sample! Please check"
+
 . .env
 
 
@@ -21,19 +23,23 @@ scripts="pynoser-admin pynoser-sh pynoser-cron-sh pynoser-errreset pynoser-randu
 mkdir -p ./tmp
 
 if [ "$1" == "-r" ]; then
-  rm $scripts
-  exit
+    rm $scripts
+    exit
 fi
 
-pushd pynoser-scripts
-# not supported by github :(
-# git archive --remote="$pynoser_repo" HEAD $scripts | tar x0
+if [[ ! -L "pynoser-admin" || "$1" == "-f" ]]; then
+    pushd pynoser-scripts
+    # not supported by github :(
+    # git archive --remote="$pynoser_repo" HEAD $scripts | tar x0
 
-git clone $pynoser_repo pynoser.tmp
-pushd pynoser.tmp || exit
-cp -p $scripts ..
-cp -p doc/restore ../../tmp
-popd
-rm -rf pynoser.tmp
-ln -srf $scripts ..
-popd
+    git clone $pynoser_repo pynoser.tmp
+    pushd pynoser.tmp || exit
+    cp -p $scripts ..
+    cp -p doc/restore ../../tmp
+    popd
+    rm -rf pynoser.tmp
+    ln -srf $scripts ..
+    popd
+else
+    echo "Script links seem to exist. Use '-f' to overwrite"
+fi
