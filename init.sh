@@ -39,6 +39,8 @@ if [[ ! -L "pynoser-admin" || "$1" == "-f" ]]; then
     cd pynoser.tmp || exit
     cp -p $scripts ..
     cp -p doc/restore ../../tmp
+    cat   doc/chown.sh | sed -r 's/uwsgi=102/uwsgi=1000/' > ../../data/chown.sh
+    chmod +x ../../data/chown.sh
     cd ..
     rm -rf pynoser.tmp
     cd ..
