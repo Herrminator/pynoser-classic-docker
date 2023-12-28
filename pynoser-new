@@ -3,6 +3,7 @@ super="johler"
 
 pynoser-admin syncdb --noinput || exit
 pynoser-admin createsuperuser --username="${super}" --email="thomas@johler.ph" || exit
+(
 pynoser-admin shell --traceback <<EOF
 from django.contrib.auth.models import User
 from pynoser.reader.models import UserPref
@@ -14,12 +15,13 @@ print(user)
 if not UserPref.objects.filter(user=user).exists():
     pref = UserPref.objects.create(user=user)
     pref.skin = "sinorca dark"
-    pred.maxAge = 0
+    pref.maxAge = 0
     pref.save()
 else:
   print("Preferences for '${super}' exist")
   print(UserPref.objects.get(user=user))
 
-EOF || exit
+EOF
+)|| exit
 
 pynoser-guest || exit
