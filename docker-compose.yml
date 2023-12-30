@@ -39,6 +39,8 @@ services:
     environment:
       # For jwilder/nginx-proxy
       - VIRTUAL_HOST=${PYNOSER_SERVER}
+      # For acme-companion
+      - LETSENCRYPT_HOST=${PYNOSER_SERVER}
     profiles:
       - default
 
