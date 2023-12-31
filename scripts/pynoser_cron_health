@@ -1,0 +1,20 @@
+#!/bin/bash
+ERR_LEVEL=3
+ERR_INTVL="2 hours"
+ERR_THRESH_PER_INTVL=20
+
+errors=$(
+python2 -u /opt/pynoser/pynoser/manage.py dbshell <<EOF
+select count(*) from djutil_errorlog
+where log_level>=${ERR_LEVEL}
+  and time_stamp > datetime('now', '-${ERR_INTVL}')
+EOF
+)
+
+if [[ $errors -ge $ERR_THRESH_PER_INTVL ]]; then
+    echo "${errors} errors  in the last ${ERR_INTVL}!"
+    exit 1
+fi
+
+exit 0
+

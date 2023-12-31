@@ -1,0 +1,7 @@
+#!/bin/bash
+curl -s -X POST http://localhost/reader/pynoser/dynamic/rpc/tree/ \
+ -H "Content-Type: application/x-www-form-urlencoded"\
+ -d 'action=getNode&data={"node":{"objectId":"subsRoot"},"tree":{"objectId":"subsTree_id"}}' \
+ | grep -Po '"articles":\s*(\d+)' || exit 1
+
+exit 0

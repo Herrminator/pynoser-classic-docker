@@ -41,6 +41,10 @@ services:
       - VIRTUAL_HOST=${PYNOSER_SERVER}
       # For acme-companion
       - LETSENCRYPT_HOST=${PYNOSER_SERVER}
+    healthcheck:
+        test: ["CMD", "/scripts/pynoser_health" ]
+        interval: 5m00s
+        timeout: 15s
     profiles:
       - default
 
@@ -53,6 +57,10 @@ services:
       "/var/run/start-cron.sh"
     volumes:
       - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/logs/cron.log:/var/log/cron.log
+    healthcheck:
+        test: ["CMD", "/scripts/pynoser_cron_health" ]
+        interval: 5m00s
+        timeout: 5s
     profiles:
       - default
 
