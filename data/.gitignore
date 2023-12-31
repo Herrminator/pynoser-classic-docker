@@ -2,3 +2,4 @@
 webfeeds
 !.gitignore
 !logs
+!htdocs

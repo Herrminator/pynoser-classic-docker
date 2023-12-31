@@ -21,6 +21,7 @@ services:
       - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data:/data
       - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/logs/nginx:/var/log/nginx
       - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/logs/uwsgi.log:/var/log/uwsgi.log
+      - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/data/htdocs/robots.txt:/usr/share/nginx/html/robots.txt
       - ${CONTAINER_HOME}/${CONTAINER_PROJECT}/scripts:/scripts
       - /etc/localtime:/etc/localtime:ro
     profiles:
