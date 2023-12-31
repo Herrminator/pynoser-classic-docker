@@ -42,6 +42,10 @@ services:
       - VIRTUAL_HOST=${PYNOSER_SERVER}
       # For acme-companion
       - LETSENCRYPT_HOST=${PYNOSER_SERVER}
+    volumes:
+      # https://stackoverflow.com/a/61954812/10545609
+      - ${PYNOSER_NGINX_LOCAL-/dev/null}:${PYNOSER_NGINX_CONF-/.devnull.nginx}:ro
+      - ${PYNOSER_UWSGI_LOCAL-/dev/null}:${PYNOSER_UWSGI_CONF-/.devnull.uwsgi}:ro
     healthcheck:
         test: ["CMD", "/scripts/pynoser_health" ]
         interval: 5m00s
