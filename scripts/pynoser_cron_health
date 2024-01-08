@@ -7,7 +7,7 @@ errors=$(
 python2 -u /opt/pynoser/pynoser/manage.py dbshell <<EOF
 select count(*) from djutil_errorlog
 where log_level>=${ERR_LEVEL}
-  and time_stamp > datetime('now', '-${ERR_INTVL}')
+  and time_stamp > datetime('now', 'localtime', '-${ERR_INTVL}')
 EOF
 ) 2>&1 || exit 42
 
