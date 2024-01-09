@@ -10,7 +10,7 @@ from reader.models    import *
 from django.db.models import Q
 from djutil           import db, dt
 
-FEEDS    = [ 338 ]
+FEEDS    = [ 338, 57 ]
 
 IMG_CONT = 'src="data:'
 IMG_PATT = re.compile(r'(.*src=")(data:[^"]+?)(".*)', re.I)
