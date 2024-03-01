@@ -1,4 +1,5 @@
 .mode column
+.width -1 -1 -1 -1 -1 -1 24 -1 -1 -1 20
 
 -- https://www.sqlite.org/dbstat.html
 with sizes as (
@@ -11,4 +12,5 @@ tot_sizes as (
   select txs + ds + ttx as tot, * from sizes
   order by tot desc
 )
-select * from tot_sizes s join reader_feed f on f.id = s.feed_id
+select tot, txs, ds, ttx, na, feed_id, substr(title, 1, 24) title, datetime(lastMod) lastMod, interval, expiry, substr(url, 1, 24) url
+from tot_sizes s join reader_feed f on f.id = s.feed_id
