@@ -12,5 +12,8 @@ tot_sizes as (
   select txs + ds + ttx as tot, * from sizes
   order by tot desc
 )
-select tot, txs, ds, ttx, na, feed_id, substr(title, 1, 24) title, datetime(lastMod) lastMod, interval, expiry, substr(url, 1, 24) url
+select tot, txs, ds, ttx, na, feed_id, substr(title, 1, 24) title, datetime(lastMod) lastMod, interval, expiry,
+       substr(replace(replace(replace(url,'https://cgi.johler.ph/feedcache','feedcache:'),
+                                          'https://cgi.johler.ph/cgi-bin/feed4me.cgi', 'feed4me:'),
+                                          'https://cgi.johler.ph/cgi-bin/forecastfox.cgi', 'forecast:'), 1, 32) url
 from tot_sizes s join reader_feed f on f.id = s.feed_id
