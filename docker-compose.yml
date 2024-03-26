@@ -38,6 +38,7 @@ services:
     environment:
       # For jwilder/nginx-proxy
       - VIRTUAL_HOST=${PYNOSER_SERVER}
+      - VIRTUAL_PATH=${PYNOSER_ROOT}
       # For acme-companion
       - LETSENCRYPT_HOST=${PYNOSER_LETSENCRYPT-${PYNOSER_SERVER}}
     volumes:
