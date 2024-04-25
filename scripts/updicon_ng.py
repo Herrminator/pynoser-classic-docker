@@ -66,17 +66,18 @@ def find_icon(f):
 
 def main(argv=sys.argv):
     ap = argparse.ArgumentParser()
-    ap.add_argument(      "feeds",   nargs="*", type=int)
-    ap.add_argument("-a", "--all",   default=False, action="store_true")
-    ap.add_argument("-c", "--clear", default=False, action="store_true", help="Clear missing or erroneous icons")
-    ap.add_argument("-d", "--debug", default=False, action="store_true")
-    ap.add_argument("-D", "--dry",   default=False, action="store_true")
+    ap.add_argument(      "feeds",     nargs="*", type=int)
+    ap.add_argument("-a", "--all",     default=False, action="store_true")
+    ap.add_argument("-c", "--clear",   default=False, action="store_true", help="Clear missing or erroneous icons")
+    ap.add_argument("-d", "--debug",   default=False, action="store_true")
+    ap.add_argument("-D", "--dry",     default=False, action="store_true")
+    ap.add_argument("-t", "--timeout", default=20.0,  type=float)
     args = ap.parse_args()
 
     global DEBUG
     DEBUG = args.debug
 
-    socket.setdefaulttimeout(20.0)
+    socket.setdefaulttimeout(args.timeout)
 
     feeds = Feed.objects.select_related().order_by("id")
     if args.feeds:
@@ -104,6 +105,8 @@ def main(argv=sys.argv):
                 print("{0.id:4} {1:40.40} {2:72.72}".format(f, "-->", neew), end="")
                 if neew is not None:
                     status = "new"
+                elif args.clear:
+                    status = "clear"
                 if (neew is not None or args.clear) and not args.dry:
                     fstatus.icon = neew
                     fstatus.save()
