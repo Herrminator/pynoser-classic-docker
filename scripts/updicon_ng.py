@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os, sys, argparse; sys.path = [os.path.realpath("..")]+sys.path
+import os, sys, argparse, socket; sys.path = [os.path.realpath("..")]+sys.path
 
 from pip._vendor      import html5lib
 from urlparse         import urlsplit, urlunsplit
@@ -75,6 +75,8 @@ def main(argv=sys.argv):
 
     global DEBUG
     DEBUG = args.debug
+
+    socket.setdefaulttimeout(20.0)
 
     feeds = Feed.objects.select_related().order_by("id")
     if args.feeds:
