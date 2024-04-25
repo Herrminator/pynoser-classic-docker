@@ -68,6 +68,7 @@ def main(argv=sys.argv):
     ap = argparse.ArgumentParser()
     ap.add_argument(      "feeds",     nargs="*", type=int)
     ap.add_argument("-a", "--all",     default=False, action="store_true")
+    ap.add_argument("-e", "--empty",   default=False, action="store_true", help="Only feeds with missing icons")
     ap.add_argument("-c", "--clear",   default=False, action="store_true", help="Clear missing or erroneous icons")
     ap.add_argument("-d", "--debug",   default=False, action="store_true")
     ap.add_argument("-D", "--dry",     default=False, action="store_true")
@@ -82,6 +83,8 @@ def main(argv=sys.argv):
     feeds = Feed.objects.select_related().order_by("id")
     if args.feeds:
         feeds = feeds.filter(id__in=args.feeds)
+    if args.empty:
+        feeds = feeds.filter(feedstatus__icon__isnull=True)
 
     for f in feeds:
         if f.isActive() or args.all:
