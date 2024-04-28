@@ -14,16 +14,35 @@ LOGFILE = sys.stderr
 DEFAULT_RSS_ICON = "https://cgi.johler.ph/static/icons/rss.png"
 DEFAULT_WEB_ICON = "https://cgi.johler.ph/static/icons/web.png"
 
+timeout = None
+
 class PseudoFeed(object):
     etag = None
     lastMod = None
 
+# I don't want to add requests to the requirements *and* I don't want to rewrite Feed.fetchPage(...)
+# But I need redirect handling and mime type detection
+# so we use the next best thing ;)
+from pip._vendor import urllib3
+http = urllib3.PoolManager(headers={ "User-Agent": feed.FEED_USER_AGENT }, retries=urllib3.Retry(total=2))
+
+def fetch_url(url, method="GET", timeout=None):
+    timeout = urllib3.Timeout(timeout) if timeout else None
+    try:
+        rsp = http.request(method, url, timeout=timeout)
+        if rsp.status >= 300:
+            return None, rsp.info(), "{0.status}: {0.reason}".format(rsp)
+        return rsp.data, rsp.info(), None
+    except Exception as exc:
+        return None, None, str(exc)
+    
 def fetch(url, debug=None):
     if debug is None: debug = DEBUG
     pseudo = PseudoFeed()
     if debug:
         print("FETCH:", url, file=LOGFILE)
-    return feed.fetchPage(pseudo, url)
+    data, info, err = fetch_url(url, timeout=timeout)
+    return (data, info, err)
 
 def find_icon(f):
     
@@ -35,10 +54,10 @@ def find_icon(f):
     # first, try the simple favicon.ico - that's enough for me
     icon = urlunsplit((split.scheme, split.netloc, "favicon.ico", None, None))
     data, info, err = fetch(icon)
-    if data and not err:
+    if data and not err and info.get("content-type", "").startswith("image"):
         return icon
     elif DEBUG:
-        print(data, err, file=LOGFILE)
+        print(data, info, err, file=LOGFILE)
 
     # now, try to parse the web page
     data, info, err = fetch(page)
@@ -58,7 +77,7 @@ def find_icon(f):
                 if not lsplit[1]: lsplit[1] = split.netloc
                 icon = urlunsplit(lsplit)
                 data, info, err = fetch(icon)
-                if data and not err:
+                if data and not err and info.get("content-type", "").startswith("image"):
                     return icon
                 elif DEBUG:
                     print(data, err, file=LOGFILE)
@@ -73,6 +92,7 @@ def main(argv=sys.argv):
     ap.add_argument(      "feeds",     nargs="*", type=int)
     ap.add_argument("-a", "--all",     default=False, action="store_true")
     ap.add_argument("-e", "--empty",   default=False, action="store_true", help="Only feeds with missing icons")
+    ap.add_argument("-m", "--match",   default=None)
     ap.add_argument("-d", "--debug",   default=False, action="store_true")
     ap.add_argument(      "--dry",     default=False, action="store_true")
     ap.add_argument("-t", "--timeout", default=20.0,  type=float)
@@ -82,9 +102,9 @@ def main(argv=sys.argv):
     args = ap.parse_args()
 
     global DEBUG
-    DEBUG = args.debug
-
-    socket.setdefaulttimeout(args.timeout)
+    global timeout
+    DEBUG   = args.debug
+    timeout = args.timeout
 
     feeds = Feed.objects.select_related().order_by("id")
     if args.feeds:
@@ -93,6 +113,8 @@ def main(argv=sys.argv):
         feeds = feeds.filter(  Q(feedstatus__icon__isnull=True)
                              | Q(feedstatus__icon=DEFAULT_RSS_ICON)
                              | Q(feedstatus__icon=DEFAULT_WEB_ICON))
+    if args.match is not None:
+        feeds = feeds.filter(Q(title__regex=args.match) | Q(url__regex=args.match) | Q(feedstatus__icon__regex=args.match))
 
     for f in feeds:
         if f.isActive() or args.all:
@@ -114,6 +136,8 @@ def main(argv=sys.argv):
                     status = "ERROR"
                 elif not fetched:
                     status = "empty"
+                elif info and not info.get("content-type", "").startswith("image"):
+                    status = "invalid"
             print(" {0}.".format(status))
             if status not in  [ "ok", "no" ]:
                 neew = find_icon(f)
