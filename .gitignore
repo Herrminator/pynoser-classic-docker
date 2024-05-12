@@ -15,3 +15,5 @@ pynoser-errreset
 pynoser-randupd
 docker.compose.up
 docker.compose.down
+
+!tmp/get-remote
