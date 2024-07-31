@@ -20,4 +20,4 @@ if [ "$1" == "--clear" ]; then
 fi
 
 rsync -vtz  ${DBSRC} ${DBDST} || exit
-rsync -vrtz ${WFSRC} ${WFDST} || exit
+rsync -vrtz --delete-after ${WFSRC} ${WFDST} || exit
