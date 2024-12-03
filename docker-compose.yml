@@ -11,6 +11,7 @@ services:
       - UID=${UID}
       - GID=${GID}
       - PYNOSER_DATABASE_NAME=/data/pynoser.db3
+      - PYNOSER_MEDIA_ROOT=/data
       - PYNOSER_COOKIE_JAR=/data/pynoser.cookies
     # - PYNOSER_APACHE_DEBUG=true
     networks:
