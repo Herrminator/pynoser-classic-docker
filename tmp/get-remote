@@ -5,12 +5,13 @@
 DBNAME=pynoser.db3
 WEBFEEDS=webfeeds
 
-DBHOST=${DBHOST-tjpi08}
-DBSRC=${DBSRC-${DBHOST}:/home/johler/develop/python/django/pynoser/pynoser.db3}
+PYNOSER=${PYNOSER-/home/johler/docker/pynoser}
+DBHOST=${DBHOST-tjvps01}
+DBSRC=${DBSRC-${DBHOST}:${PYNOSER}/data/pynoser.db3}
 
 # copy here - use restore to restore to container data
 DBDST=.
-WFSRC=${WFSRC-${DBHOST}:/home/johler/develop/python/django/pynoser/data/${WEBFEEDS}}
+WFSRC=${WFSRC-${DBHOST}:${PYNOSER}/data/${WEBFEEDS}}
 WFDST=${DBDST}/data
 
 if [ "$1" == "--clear" ]; then
