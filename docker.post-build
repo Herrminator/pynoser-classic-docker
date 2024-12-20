@@ -1,0 +1,5 @@
+#!/bin/bash
+sudo systemctl restart docker.pynoser
+sleep 3
+pynoser-unittest-run -v2 reader
+pynoser-unittest-run
